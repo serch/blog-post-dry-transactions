@@ -1,0 +1,2 @@
+class CannotEditError < StandardError
+end

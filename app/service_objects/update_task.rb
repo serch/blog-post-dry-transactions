@@ -6,6 +6,17 @@ class UpdateTask
   end
 
   def call
+    check_permissions
+    update_task
+  end
+
+  private
+
+  def check_permissions
+    raise CannotEditError unless @user.can_edit?(@task)
+  end
+
+  def update_task
     @task.update(@params)
   end
 end
