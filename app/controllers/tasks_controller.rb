@@ -37,10 +37,29 @@ class TasksController < ApplicationController
     end
   end
 
-  # PATCH/PUT /tasks/1
-  # PATCH/PUT /tasks/1.json
+  ################################################################################
+  # BEGIN Update methods
+  ################################################################################
+
   def update
+    @task = Task.find(params[:id])
+    task_params = params.require(:task).permit(:title, :description, :done)
+
+    respond_to do |format|
+      if @task.update(task_params)
+        format.html { redirect_to @task, notice: 'Task was successfully updated.' }
+        format.json { render :show, status: :ok, location: @task }
+      else
+        format.html { render :edit }
+        format.json { render json: @task.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def update2
     current_user = User.new
+    @task = Task.find(params[:id])
+    task_params = params.require(:task).permit(:title, :description, :done)
 
     respond_to do |format|
       so = UpdateTask.new(user: current_user, task: @task, params: task_params)
@@ -53,6 +72,10 @@ class TasksController < ApplicationController
       end
     end
   end
+
+  ################################################################################
+  # END Update methods
+  ################################################################################
 
   # DELETE /tasks/1
   # DELETE /tasks/1.json
