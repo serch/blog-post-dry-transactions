@@ -9,3 +9,6 @@ Style/Documentation:
 
 Metrics/MethodLength:
   Enabled: False
+
+Metrics/AbcSize:
+  Enabled: False

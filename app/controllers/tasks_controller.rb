@@ -86,6 +86,28 @@ class TasksController < ApplicationController
   end
 
   def dry_transaction_update
+    current_user = User.new
+    @task = Task.find(params[:id])
+    task_params = params.require(:task).permit(:title, :description, :done)
+
+    update_task = UpdateTaskTransaction.new
+    update_task.call(
+      user: current_user,
+      task: @task,
+      params: task_params
+    ) do |tx|
+      tx.success do |task|
+        redirect_to task, notice: 'Task was successfully updated.'
+      end
+
+      tx.failure :validate do |_error|
+        redirect_to tasks_url, alert: 'You can only edit your tasks.'
+      end
+
+      tx.failure do |_error|
+        render :edit
+      end
+    end
   end
 
   ################################################################################
