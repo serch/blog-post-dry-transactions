@@ -40,8 +40,11 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1
   # PATCH/PUT /tasks/1.json
   def update
+    current_user = User.new
+
     respond_to do |format|
-      if @task.update(task_params)
+      so = UpdateTask.new(user: current_user, task: @task, params: task_params)
+      if so.call
         format.html { redirect_to @task, notice: 'Task was successfully updated.' }
         format.json { render :show, status: :ok, location: @task }
       else
