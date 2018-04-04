@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'dry-container', '~> 0.6'
 gem 'dry-transaction', '~> 0.11'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

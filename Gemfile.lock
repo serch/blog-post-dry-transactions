@@ -175,6 +175,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
+  dry-container (~> 0.6)
   dry-transaction (~> 0.11)
   jbuilder (~> 2.0)
   jquery-rails

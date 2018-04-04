@@ -2,7 +2,7 @@ class UpdateTaskTransaction
   include Dry::Transaction
 
   step :normalize
-  step :validate
+  step :permissions
   step :persist
   map :notify
 
@@ -10,7 +10,7 @@ class UpdateTaskTransaction
     Success(input.symbolize_keys)
   end
 
-  def validate(input)
+  def permissions(input)
     if input[:user].can_edit?(input[:task])
       Success(input)
     else
