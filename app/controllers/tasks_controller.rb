@@ -41,7 +41,17 @@ class TasksController < ApplicationController
   # BEGIN Update methods
   ################################################################################
 
-  def updatef
+  def update
+    if params[:commit] == 'regular_update'
+      regular_update
+    elsif params[:commit] == 'service_object_update'
+      service_object_update
+    elsif params[:commit] == 'dry_transaction_update'
+      dry_transaction_update
+    end
+  end
+
+  def regular_update
     current_user = User.new
     @task = Task.find(params[:id])
     task_params = params.require(:task).permit(:title, :description, :done)
@@ -58,7 +68,7 @@ class TasksController < ApplicationController
     end
   end
 
-  def update
+  def service_object_update
     current_user = User.new
     @task = Task.find(params[:id])
     task_params = params.require(:task).permit(:title, :description, :done)
@@ -73,6 +83,9 @@ class TasksController < ApplicationController
     rescue StandardError => _exc
       render :edit
     end
+  end
+
+  def dry_transaction_update
   end
 
   ################################################################################
