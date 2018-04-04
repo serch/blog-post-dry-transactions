@@ -62,6 +62,7 @@ class TasksController < ApplicationController
     end
 
     if @task.update(task_params)
+      Notifier.notify_watchers(@task) if @task.was_just_completed?
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit
@@ -96,8 +97,8 @@ class TasksController < ApplicationController
       task: @task,
       params: task_params
     ) do |tx|
-      tx.success do |task|
-        redirect_to task, notice: 'Task was successfully updated.'
+      tx.success do |_value|
+        redirect_to @task, notice: 'Task was successfully updated.'
       end
 
       tx.failure :validate do |_error|

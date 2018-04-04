@@ -12,3 +12,9 @@ Metrics/MethodLength:
 
 Metrics/AbcSize:
   Enabled: False
+
+Style/GuardClause:
+  Enabled: False
+
+Style/IfUnlessModifier:
+  Enabled: False

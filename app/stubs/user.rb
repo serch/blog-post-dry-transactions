@@ -1,5 +1,5 @@
 class User
   def can_edit?(_task)
-    false
+    true
   end
 end

@@ -1,14 +1,13 @@
-# require 'dry/transaction'
-
 class UpdateTaskTransaction
   include Dry::Transaction
 
-  step :process
+  step :normalize
   step :validate
   step :persist
+  map :notify
 
-  def process(input)
-    Success(user: input[:user], task: input[:task], params: input[:params])
+  def normalize(input)
+    Success(input.symbolize_keys)
   end
 
   def validate(input)
@@ -22,6 +21,12 @@ class UpdateTaskTransaction
   def persist(input)
     input[:task].update(input[:params])
 
-    Success(input[:task])
+    Success(input)
+  end
+
+  def notify(input)
+    if input[:task].was_just_completed?
+      Notifier.notify_watchers(input[:task])
+    end
   end
 end
