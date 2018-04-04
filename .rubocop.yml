@@ -1,0 +1,5 @@
+# default config
+# https://github.com/bbatsov/rubocop/blob/master/config/default.yml
+
+Metrics/LineLength:
+  Max: 120
