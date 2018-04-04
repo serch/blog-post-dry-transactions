@@ -41,9 +41,15 @@ class TasksController < ApplicationController
   # BEGIN Update methods
   ################################################################################
 
-  def updatea
+  def updatef
+    current_user = User.new
     @task = Task.find(params[:id])
     task_params = params.require(:task).permit(:title, :description, :done)
+
+    unless current_user.can_edit?(@task)
+      redirect_to tasks_url, alert: 'You can only edit your tasks.'
+      return
+    end
 
     if @task.update(task_params)
       redirect_to @task, notice: 'Task was successfully updated.'
@@ -57,8 +63,13 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
     task_params = params.require(:task).permit(:title, :description, :done)
 
-    so = UpdateTask.new(user: current_user, task: @task, params: task_params)
-    if so.call
+    unless current_user.can_edit?(@task)
+      redirect_to tasks_url, alert: 'You can only edit your tasks.'
+      return
+    end
+
+    update_task = UpdateTask.new(user: current_user, task: @task, params: task_params)
+    if update_task.call
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit
