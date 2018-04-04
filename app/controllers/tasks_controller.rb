@@ -41,35 +41,27 @@ class TasksController < ApplicationController
   # BEGIN Update methods
   ################################################################################
 
-  def update
+  def updatea
     @task = Task.find(params[:id])
     task_params = params.require(:task).permit(:title, :description, :done)
 
-    respond_to do |format|
-      if @task.update(task_params)
-        format.html { redirect_to @task, notice: 'Task was successfully updated.' }
-        format.json { render :show, status: :ok, location: @task }
-      else
-        format.html { render :edit }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
+    if @task.update(task_params)
+      redirect_to @task, notice: 'Task was successfully updated.'
+    else
+      render :edit
     end
   end
 
-  def update2
+  def update
     current_user = User.new
     @task = Task.find(params[:id])
     task_params = params.require(:task).permit(:title, :description, :done)
 
-    respond_to do |format|
-      so = UpdateTask.new(user: current_user, task: @task, params: task_params)
-      if so.call
-        format.html { redirect_to @task, notice: 'Task was successfully updated.' }
-        format.json { render :show, status: :ok, location: @task }
-      else
-        format.html { render :edit }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
+    so = UpdateTask.new(user: current_user, task: @task, params: task_params)
+    if so.call
+      redirect_to @task, notice: 'Task was successfully updated.'
+    else
+      render :edit
     end
   end
 
