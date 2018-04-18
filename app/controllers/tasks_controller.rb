@@ -54,10 +54,6 @@ class TasksController < ApplicationController
   end
 
   def regular_update
-    current_user = User.new
-    @task = Task.find(params[:id])
-    task_params = params.require(:task).permit(:title, :description, :done)
-
     unless current_user.can_edit?(@task)
       redirect_to tasks_url, alert: 'You can only edit your tasks.'
       return
@@ -71,29 +67,16 @@ class TasksController < ApplicationController
   end
 
   def service_object_update
-    current_user = User.new
-    @task = Task.find(params[:id])
-    task_params = params.require(:task).permit(:title, :description, :done)
-
-    update_task = UpdateTask.new(user: current_user, task: @task, params: task_params)
-
-    begin
-      update_task.call
-      redirect_to @task, notice: 'Task was successfully updated.'
-    rescue CannotEditError => _exc
-      redirect_to tasks_url, alert: 'You can only edit your tasks.'
-    rescue StandardError => _exc
-      render :edit
-    end
+    UpdateTask.new(user: current_user, task: @task, params: task_params).call
+    redirect_to @task, notice: 'Task was successfully updated.'
+  rescue CannotEditError => _exc
+    redirect_to tasks_url, alert: 'You can only edit your tasks.'
+  rescue StandardError => _exc
+    render :edit
   end
 
   def dry_transaction_update
-    current_user = User.new
-    @task = Task.find(params[:id])
-    task_params = params.require(:task).permit(:title, :description, :done)
-
-    update_task = UpdateTaskTransaction.new
-    update_task.call(
+    UpdateTaskTransaction.new.call(
       user: current_user,
       task: @task,
       params: task_params
@@ -113,12 +96,7 @@ class TasksController < ApplicationController
   end
 
   def dry_transaction_with_ops_update
-    current_user = User.new
-    @task = Task.find(params[:id])
-    task_params = params.require(:task).permit(:title, :description, :done)
-
-    update_task = UpdateTaskTransactionWithOperations.new
-    update_task.call(
+    UpdateTaskTransactionWithOperations.new.call(
       user: current_user,
       task: @task,
       params: task_params
@@ -135,6 +113,10 @@ class TasksController < ApplicationController
         render :edit
       end
     end
+  end
+
+  def current_user
+    @current_user ||= User.new
   end
 
   ################################################################################
