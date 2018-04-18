@@ -64,7 +64,6 @@ class TasksController < ApplicationController
     end
 
     if @task.update(task_params)
-      Notifier.notify_watchers(@task) if @task.was_just_completed?
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit

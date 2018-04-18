@@ -4,7 +4,6 @@ class UpdateTaskTransaction
   step :normalize
   step :permissions
   step :persist
-  map :notify
 
   def normalize(input)
     Success(input.symbolize_keys)
@@ -22,11 +21,5 @@ class UpdateTaskTransaction
     input[:task].update(input[:params])
 
     Success(input)
-  end
-
-  def notify(input)
-    if input[:task].was_just_completed?
-      Notifier.notify_watchers(input[:task])
-    end
   end
 end

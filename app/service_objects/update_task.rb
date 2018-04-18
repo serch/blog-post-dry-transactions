@@ -8,7 +8,6 @@ class UpdateTask
   def call
     check_permissions
     update_task
-    notify_watchers
   end
 
   private
@@ -19,11 +18,5 @@ class UpdateTask
 
   def update_task
     @task.update(@params)
-  end
-
-  def notify_watchers
-    if @task.was_just_completed?
-      Notifier.notify_watchers(@task)
-    end
   end
 end
