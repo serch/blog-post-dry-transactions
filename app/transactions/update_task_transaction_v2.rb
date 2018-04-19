@@ -1,4 +1,4 @@
-class UpdateTaskTransactionWithOperations
+class UpdateTaskTransactionV2
   include Dry::Transaction(container: Container)
 
   step :normalize

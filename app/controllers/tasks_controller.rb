@@ -46,10 +46,12 @@ class TasksController < ApplicationController
       regular_update
     elsif params[:commit] == 'service_object_update'
       service_object_update
+    elsif params[:commit] == 'service_object_update_v2'
+      service_object_update_v2
     elsif params[:commit] == 'dry_transaction_update'
       dry_transaction_update
-    elsif params[:commit] == 'dry_transaction_with_ops_update'
-      dry_transaction_with_ops_update
+    elsif params[:commit] == 'dry_transaction_update_v2'
+      dry_transaction_update_v2
     end
   end
 
@@ -75,12 +77,18 @@ class TasksController < ApplicationController
     render :edit
   end
 
+  def service_object_update_v2
+    UpdateTaskV2.new(user: current_user, task: @task, params: task_params).call
+    redirect_to @task, notice: 'Task was successfully updated.'
+  rescue CannotEditError => _exc
+    redirect_to tasks_url, alert: 'You can only edit your tasks.'
+  rescue StandardError => _exc
+    puts _exc.message
+    render :edit
+  end
+
   def dry_transaction_update
-    UpdateTaskTransaction.new.call(
-      user: current_user,
-      task: @task,
-      params: task_params
-    ) do |tx|
+    UpdateTaskTransaction.new.call(user: current_user, task: @task, params: task_params) do |tx|
       tx.success do |_value|
         redirect_to @task, notice: 'Task was successfully updated.'
       end
@@ -95,12 +103,8 @@ class TasksController < ApplicationController
     end
   end
 
-  def dry_transaction_with_ops_update
-    UpdateTaskTransactionWithOperations.new.call(
-      user: current_user,
-      task: @task,
-      params: task_params
-    ) do |tx|
+  def dry_transaction_update_v2
+    UpdateTaskTransactionV2.new.call(user: current_user, task: @task, params: task_params) do |tx|
       tx.success do |_value|
         redirect_to @task, notice: 'Task was successfully updated.'
       end
