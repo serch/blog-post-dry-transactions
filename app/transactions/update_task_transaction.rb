@@ -2,14 +2,14 @@ class UpdateTaskTransaction
   include Dry::Transaction
 
   step :normalize
-  step :permissions
+  step :authorize
   step :persist
 
   def normalize(input)
     Success(input.symbolize_keys)
   end
 
-  def permissions(input)
+  def authorize(input)
     if input[:user].can_edit?(input[:task])
       Success(input)
     else

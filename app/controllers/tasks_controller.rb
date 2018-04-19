@@ -83,7 +83,6 @@ class TasksController < ApplicationController
   rescue CannotEditError => _exc
     redirect_to tasks_url, alert: 'You can only edit your tasks.'
   rescue StandardError => _exc
-    puts _exc.message
     render :edit
   end
 
@@ -93,7 +92,7 @@ class TasksController < ApplicationController
         redirect_to @task, notice: 'Task was successfully updated.'
       end
 
-      tx.failure :permissions do |_error|
+      tx.failure :authorize do |_error|
         redirect_to tasks_url, alert: 'You can only edit your tasks.'
       end
 
@@ -109,7 +108,7 @@ class TasksController < ApplicationController
         redirect_to @task, notice: 'Task was successfully updated.'
       end
 
-      tx.failure :permissions do |_error|
+      tx.failure :authorize do |_error|
         redirect_to tasks_url, alert: 'You can only edit your tasks.'
       end
 
