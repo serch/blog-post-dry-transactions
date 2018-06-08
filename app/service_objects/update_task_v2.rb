@@ -1,5 +1,5 @@
 class UpdateTaskV2
-  def initialize(user:, task:, params:, permission_checker:)
+  def initialize(user:, task:, params:, permission_checker: nil)
     @user = user
     @task = task
     @params = params
