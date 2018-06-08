@@ -1,8 +1,9 @@
 class UpdateTaskV2
-  def initialize(user:, task:, params:)
+  def initialize(user:, task:, params:, permission_checker:)
     @user = user
     @task = task
     @params = params
+    @permission_checker = permission_checker || CheckPermissions.new(user: @user, task: @task)
   end
 
   def call
@@ -13,7 +14,7 @@ class UpdateTaskV2
   private
 
   def check_permissions
-    CheckPermissions.new(user: @user, task: @task).call
+    @permission_checker.call
   end
 
   def update_task
