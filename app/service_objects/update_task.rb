@@ -18,5 +18,6 @@ class UpdateTask
 
   def update_task
     @task.update(@params)
+    return @task
   end
 end

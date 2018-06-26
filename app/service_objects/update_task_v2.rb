@@ -19,5 +19,6 @@ class UpdateTaskV2
 
   def update_task
     @task.update(@params)
+    return @task
   end
 end

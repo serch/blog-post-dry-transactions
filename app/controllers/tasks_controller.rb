@@ -61,7 +61,9 @@ class TasksController < ApplicationController
       return
     end
 
-    if @task.update(task_params)
+    @task.update(task_params)
+
+    if @task.errors.none?
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit
@@ -69,21 +71,25 @@ class TasksController < ApplicationController
   end
 
   def service_object_update
-    UpdateTask.new(user: current_user, task: @task, params: task_params).call
-    redirect_to @task, notice: 'Task was successfully updated.'
+    @task = UpdateTask.new(user: current_user, task: @task, params: task_params).call
+    if @task.errors.none?
+      redirect_to @task, notice: 'Task was successfully updated.'
+    else
+      render :edit
+    end
   rescue CannotEditError => _exc
     redirect_to tasks_url, alert: 'You can only edit your tasks.'
-  rescue StandardError => _exc
-    render :edit
   end
 
   def service_object_update_v2
-    UpdateTaskV2.new(user: current_user, task: @task, params: task_params).call
-    redirect_to @task, notice: 'Task was successfully updated.'
+    @task = UpdateTaskV2.new(user: current_user, task: @task, params: task_params).call
+    if @task.errors.none?
+      redirect_to @task, notice: 'Task was successfully updated.'
+    else
+      render :edit
+    end
   rescue CannotEditError => _exc
     redirect_to tasks_url, alert: 'You can only edit your tasks.'
-  rescue StandardError => _exc
-    render :edit
   end
 
   def dry_transaction_update
