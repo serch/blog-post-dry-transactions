@@ -61,9 +61,7 @@ class TasksController < ApplicationController
       return
     end
 
-    @task.update(task_params)
-
-    if @task.errors.none?
+    if @task.update(task_params)
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit
@@ -72,7 +70,7 @@ class TasksController < ApplicationController
 
   def service_object_update
     @task = UpdateTask.new(user: current_user, task: @task, params: task_params).call
-    if @task.errors.none?
+    if !@task.errors.any?
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit
@@ -83,7 +81,7 @@ class TasksController < ApplicationController
 
   def service_object_update_v2
     @task = UpdateTaskV2.new(user: current_user, task: @task, params: task_params).call
-    if @task.errors.none?
+    if !@task.errors.any?
       redirect_to @task, notice: 'Task was successfully updated.'
     else
       render :edit
@@ -143,13 +141,14 @@ class TasksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = Task.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def task_params
-      params.require(:task).permit(:title, :description, :done)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_task
+    @task = Task.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def task_params
+    params.require(:task).permit(:title, :description, :done)
+  end
 end

@@ -8,6 +8,7 @@ class UpdateTask
   def call
     check_permissions
     update_task
+    return @task
   end
 
   private
@@ -18,6 +19,5 @@ class UpdateTask
 
   def update_task
     @task.update(@params)
-    return @task
   end
 end
