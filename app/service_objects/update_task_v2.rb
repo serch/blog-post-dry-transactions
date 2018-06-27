@@ -9,7 +9,7 @@ class UpdateTaskV2
   def call
     check_permissions
     update_task
-    return @task
+    @task
   end
 
   private
