@@ -70,10 +70,10 @@ class TasksController < ApplicationController
 
   def service_object_update
     @task = UpdateTask.new(user: current_user, task: @task, params: task_params).call
-    if !@task.errors.any?
-      redirect_to @task, notice: 'Task was successfully updated.'
-    else
+    if @task.errors.any?
       render :edit
+    else
+      redirect_to @task, notice: 'Task was successfully updated.'
     end
   rescue CannotEditError => _exc
     redirect_to tasks_url, alert: 'You can only edit your tasks.'
@@ -81,10 +81,10 @@ class TasksController < ApplicationController
 
   def service_object_update_v2
     @task = UpdateTaskV2.new(user: current_user, task: @task, params: task_params).call
-    if !@task.errors.any?
-      redirect_to @task, notice: 'Task was successfully updated.'
-    else
+    if @task.errors.any?
       render :edit
+    else
+      redirect_to @task, notice: 'Task was successfully updated.'
     end
   rescue CannotEditError => _exc
     redirect_to tasks_url, alert: 'You can only edit your tasks.'
